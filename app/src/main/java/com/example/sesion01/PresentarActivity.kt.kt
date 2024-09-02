@@ -25,6 +25,7 @@ class PresentarActivity : ComponentActivity() {
                 }
             }
         }
+
         Toast.makeText(this,"Presentar onCreate",Toast.LENGTH_SHORT).show()
     }
 
@@ -52,4 +53,5 @@ class PresentarActivity : ComponentActivity() {
         super.onDestroy()
         Toast.makeText(this,"Presentar onDestroy", Toast.LENGTH_SHORT).show()
     }
+
 }

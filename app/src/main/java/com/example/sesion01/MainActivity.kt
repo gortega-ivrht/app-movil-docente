@@ -30,7 +30,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
         Toast.makeText(this,"onCreate",Toast.LENGTH_SHORT).show()
         Log.d("MainActivity","onCreate")
     }
@@ -64,6 +63,7 @@ class MainActivity : ComponentActivity() {
         Toast.makeText(this,"onDestroy",Toast.LENGTH_SHORT).show()
         Log.d("MainActivity","onDestroy")
     }
+
 }
 
 @Composable
