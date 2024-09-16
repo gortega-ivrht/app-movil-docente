@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        Toast.makeText(this,"onStart",Toast.LENGTH_SHORT).show()
+        Toast.makeText(this,"onStart-test",Toast.LENGTH_SHORT).show()
         Log.d("MainActivity","onStart")
     }
 
