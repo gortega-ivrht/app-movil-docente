@@ -58,6 +58,11 @@ class MainActivity : ComponentActivity() {
         Log.d("MainActivity","onStop")
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        Toast.makeText(this,"onRestart",Toast.LENGTH_SHORT).show()
+        Log.d("MainActivity","onStop")
+    }
     override fun onDestroy() {
         super.onDestroy()
         Toast.makeText(this,"onDestroy",Toast.LENGTH_SHORT).show()
