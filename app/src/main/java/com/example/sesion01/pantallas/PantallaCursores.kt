@@ -67,7 +67,7 @@ fun PantallaCursores(viewModel: UserViewModel) {
                 //UserRow(user)
                 UserRow(user,
                     onDelete =  { id ->viewModel.deleteUser(id)},  // Llama a la función de eliminar en el ViewModel
-                    onUpdate = { id, name -> viewModel.updateUser(id, name) }
+                    onUpdate = { id, name, email -> viewModel.updateUser(id, name, email) }
                 )
             }
         }
@@ -76,10 +76,11 @@ fun PantallaCursores(viewModel: UserViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String) -> Unit) {
+fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String, String) -> Unit) {
 
     var isEditing by remember { mutableStateOf(false) }
     var updatedName by remember { mutableStateOf(user.name) }
+    var updatedEmail by remember { mutableStateOf(user.email) }
 
     Row (
         modifier = Modifier
@@ -101,8 +102,15 @@ fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String) -> Un
                 textStyle = LocalTextStyle.current.copy(fontSize = 10.sp)
             )
 
+            TextField(
+                value = updatedEmail,
+                onValueChange = { updatedEmail = it },
+                modifier = Modifier.weight(2f),
+                textStyle = LocalTextStyle.current.copy(fontSize = 10.sp)
+            )
+
             Button( onClick = {
-                                onUpdate(user.id, updatedName)
+                                onUpdate(user.id, updatedName,updatedEmail)
                                 isEditing = false  // Salir del modo edición
                             },
                     modifier = Modifier.padding(end = 4.dp),
@@ -115,6 +123,7 @@ fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String) -> Un
             Button(
                 onClick = {
                     updatedName = user.name  // Revertir los cambios
+                    updatedName = user.email
                     isEditing = false  // Salir del modo edición sin guardar
                 },
                 modifier = Modifier.padding(start = 4.dp),
@@ -125,6 +134,9 @@ fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String) -> Un
 
         }else {
             Text(text = user.name, modifier = Modifier.weight(2f))
+            Text(text = user.email, modifier = Modifier.weight(2f))
+            Text(text = user.phone, modifier = Modifier.weight(2f))
+
             Button( onClick = { isEditing = true },
                     modifier = Modifier.padding(start = 4.dp),
                     contentPadding = PaddingValues(1.dp)

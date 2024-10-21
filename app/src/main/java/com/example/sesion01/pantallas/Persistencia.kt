@@ -33,7 +33,7 @@ import com.example.sesion01.viewmodel.UserViewModel
 @Composable
 fun Persistencia (userViewModel: UserViewModel){
     val contex = LocalContext.current
-
+    userViewModel.getDatabaseVersion(contex)
     var name by remember { mutableStateOf("hlaaaaaaaaaaa") }
     val userList by userViewModel.userList.collectAsState()
     var showSuccessMessage by remember { mutableStateOf(false) } // sesion6

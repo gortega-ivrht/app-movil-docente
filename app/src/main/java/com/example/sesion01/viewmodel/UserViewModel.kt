@@ -1,5 +1,6 @@
 package com.example.sesion01.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sesion01.data.model.User
@@ -35,9 +36,9 @@ class UserViewModel(private val userRepository: UserRepository): ViewModel(){
         }
     }
 
-    fun updateUser(id: Long, name: String) {
+    fun updateUser(id: Long, name: String, email:String) {
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.updateUser(id, name)
+            userRepository.updateUser(id, name, email)
             loadUsers() // Refrescar la lista después de la actualización
         }
     }
@@ -47,5 +48,9 @@ class UserViewModel(private val userRepository: UserRepository): ViewModel(){
             userRepository.deleteUser(id)
             loadUsers() // Refrescar la lista después de la eliminación
         }
+    }
+
+    fun getDatabaseVersion(context: Context): Int {
+        return userRepository.getDatabaseVersion(context)
     }
 }
