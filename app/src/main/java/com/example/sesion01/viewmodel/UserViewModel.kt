@@ -1,6 +1,7 @@
 package com.example.sesion01.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sesion01.data.model.User
@@ -12,11 +13,16 @@ import kotlinx.coroutines.launch
 
 class UserViewModel(private val userRepository: UserRepository): ViewModel(){
     private val _userList = MutableStateFlow<List<User>>(emptyList())
+    private val _loginUser = MutableStateFlow<Boolean>(false)
     val userList = _userList.asStateFlow()
 
-    fun insertUser(name:String){
+    init {
+        loadUsers()
+    }
+
+    fun insertUser(name:String,email:String,phone:String,password:String){
         viewModelScope.launch (Dispatchers.IO){
-            val newUser = User(name = name)
+            val newUser = User(name = name,email=email,phone=phone, password = password)
             userRepository.insertUser(newUser)
 
             _userList.value = userRepository.getAllUsers()
@@ -36,9 +42,9 @@ class UserViewModel(private val userRepository: UserRepository): ViewModel(){
         }
     }
 
-    fun updateUser(id: Long, name: String, email:String) {
+    fun updateUser(id: Long, name: String, email:String, phone:String,password:String) {
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.updateUser(id, name, email)
+            userRepository.updateUser(id, name, email,phone,password)
             loadUsers() // Refrescar la lista después de la actualización
         }
     }
@@ -48,6 +54,13 @@ class UserViewModel(private val userRepository: UserRepository): ViewModel(){
             userRepository.deleteUser(id)
             loadUsers() // Refrescar la lista después de la eliminación
         }
+    }
+
+    fun loginUser(username: String, password: String):Boolean {
+        var login = userRepository.loginUser(username, password)
+
+        Log.d("seguimiento login",login.toString())
+        return login
     }
 
     fun getDatabaseVersion(context: Context): Int {

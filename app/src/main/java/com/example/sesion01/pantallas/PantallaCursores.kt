@@ -1,4 +1,5 @@
 package com.example.sesion01.pantallas
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -67,7 +68,7 @@ fun PantallaCursores(viewModel: UserViewModel) {
                 //UserRow(user)
                 UserRow(user,
                     onDelete =  { id ->viewModel.deleteUser(id)},  // Llama a la función de eliminar en el ViewModel
-                    onUpdate = { id, name, email -> viewModel.updateUser(id, name, email) }
+                    onUpdate = { id, name, email,phone,password -> viewModel.updateUser(id, name, email,phone,password) }
                 )
             }
         }
@@ -76,11 +77,13 @@ fun PantallaCursores(viewModel: UserViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String, String) -> Unit) {
+fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String, String, String, String) -> Unit) {
 
     var isEditing by remember { mutableStateOf(false) }
     var updatedName by remember { mutableStateOf(user.name) }
     var updatedEmail by remember { mutableStateOf(user.email) }
+    var updatedPhone by remember { mutableStateOf(user.phone) }
+    var updatedPassword by remember { mutableStateOf(user.password) }
 
     Row (
         modifier = Modifier
@@ -94,6 +97,7 @@ fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String, Strin
             fontSize = 10.sp)
 
         if (isEditing) {
+            Log.d("isEditing",updatedName)
             // Modo edición: permitir que el nombre sea editable
             TextField(
                 value = updatedName,
@@ -109,8 +113,22 @@ fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String, Strin
                 textStyle = LocalTextStyle.current.copy(fontSize = 10.sp)
             )
 
+            TextField(
+                value = updatedPhone,
+                onValueChange = { updatedPhone = it },
+                modifier = Modifier.weight(2f),
+                textStyle = LocalTextStyle.current.copy(fontSize = 10.sp)
+            )
+
+            TextField(
+                value = updatedPassword,
+                onValueChange = { updatedPassword = it },
+                modifier = Modifier.weight(2f),
+                textStyle = LocalTextStyle.current.copy(fontSize = 10.sp)
+            )
+
             Button( onClick = {
-                                onUpdate(user.id, updatedName,updatedEmail)
+                                onUpdate(user.id, updatedName,updatedEmail,updatedPhone,updatedPassword)
                                 isEditing = false  // Salir del modo edición
                             },
                     modifier = Modifier.padding(end = 4.dp),
@@ -123,7 +141,9 @@ fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String, Strin
             Button(
                 onClick = {
                     updatedName = user.name  // Revertir los cambios
-                    updatedName = user.email
+                    updatedEmail = user.email
+                    updatedPhone = user.phone
+                    updatedPassword = user.password
                     isEditing = false  // Salir del modo edición sin guardar
                 },
                 modifier = Modifier.padding(start = 4.dp),
@@ -136,6 +156,7 @@ fun UserRow(user: User, onDelete: (Long) -> Unit, onUpdate: (Long, String, Strin
             Text(text = user.name, modifier = Modifier.weight(2f))
             Text(text = user.email, modifier = Modifier.weight(2f))
             Text(text = user.phone, modifier = Modifier.weight(2f))
+            Text(text = user.password, modifier = Modifier.weight(2f))
 
             Button( onClick = { isEditing = true },
                     modifier = Modifier.padding(start = 4.dp),

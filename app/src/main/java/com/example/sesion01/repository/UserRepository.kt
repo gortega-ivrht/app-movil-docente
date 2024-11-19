@@ -19,12 +19,16 @@ class UserRepository(private val userDao: UserDao){
         return userDao.getUsersFilter(nameFilter)
     }
 
-    fun updateUser(id: Long, newName: String, newEmail:String): Int {
-        return userDao.updateUser(id,newName, newEmail)
+    fun updateUser(id: Long, newName: String, newEmail:String, newPhone:String, newPassword:String): Int {
+        return userDao.updateUser(id,newName, newEmail, newPhone,newPassword)
     }
 
     fun deleteUser(id: Long): Int {
         return userDao.deleteUser(id)
+    }
+
+    fun loginUser(username: String, password: String): Boolean {
+        return userDao.authenticateUser(username, password)
     }
 
     fun getDatabaseVersion(context: Context): Int {

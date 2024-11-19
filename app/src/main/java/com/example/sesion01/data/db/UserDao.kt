@@ -13,6 +13,9 @@ class UserDao(context: Context){
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put("name",user.name)
+            put("email",user.email)
+            put("phone",user.phone)
+            put("password",hashPassword(user.phone))
         }
 
         return db.insert("users",null,values).also {
@@ -29,13 +32,17 @@ class UserDao(context: Context){
             do {
                 val  id = cursor.getLong(cursor.getColumnIndexOrThrow("id"))
                 val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
-                users.add(User(id,name))
+                val email = cursor.getString(cursor.getColumnIndexOrThrow("email"))
+                val phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"))
+                val password = cursor.getString(cursor.getColumnIndexOrThrow("password"))
+
+                users.add(User(id,name,email,phone,password))
             } while (cursor.moveToNext())
 
         }
         cursor.close()
         db.close()
-
+        Log.d("Seguimiento usuarios existentes", cursor.toString())
         return users
     }
 
@@ -45,7 +52,7 @@ class UserDao(context: Context){
         val users = mutableListOf<User>()
 
         try {
-            val projection = arrayOf("id", "name","email","phone")
+            val projection = arrayOf("id", "name","email","phone","password")
             val selection = "name LIKE ?"
             val selectionArgs = arrayOf("$nameFilter%")
             val sortOrder = "id DESC"
@@ -68,9 +75,10 @@ class UserDao(context: Context){
                     val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
                     val email = cursor.getString(cursor.getColumnIndexOrThrow("email"))
                     val phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"))
+                    val password = cursor.getString(cursor.getColumnIndexOrThrow("password"))
 
                     // Procesar los datos obtenidos
-                    users.add(User(id, name, email,phone))
+                    users.add(User(id, name, email,phone,password))
                 } while (cursor.moveToNext())
             }
             cursor.close()
@@ -83,12 +91,14 @@ class UserDao(context: Context){
         }
     }
 
-    fun updateUser(id: Long, newName: String, newEmail:String): Int {
+    fun updateUser(id: Long, newName: String, newEmail:String, newPhone:String, newPassword:String): Int {
 
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put("name", newName)
             put("email",newEmail)
+            put("phone",newPhone)
+            put("password",hashPassword(newPassword))
         }
         val selection = "id = ?"
         val selectionArgs = arrayOf(id.toString())
@@ -108,6 +118,28 @@ class UserDao(context: Context){
         val selection = "id = ?"
         val selectionArgs = arrayOf(id.toString())
         return db.delete("users", selection, selectionArgs)
+    }
+
+
+    fun authenticateUser(username: String, password: String): Boolean {
+        getAllUsers()
+        val db = dbHelper.readableDatabase
+        val cursor = db.query(
+            "users",
+            arrayOf("id"),
+            "email = ? AND password = ?",
+            arrayOf(username, hashPassword(password)),
+            null, null, null
+        )
+
+        val isAuthenticated = cursor.moveToFirst()
+        cursor.close()
+        return isAuthenticated
+    }
+
+    private fun hashPassword(password: String): String {
+        // Aquí puedes usar una librería para encriptación; esta es una versión simple
+        return password.hashCode().toString()  // Usa un método de hash seguro en una implementación real
     }
 
     fun getDatabaseVersion(context: Context): Int {
@@ -133,6 +165,7 @@ class UserDao(context: Context){
         db.close()
         return version
     }
+
 
 
 
