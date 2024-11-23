@@ -37,8 +37,10 @@ fun Persistencia (userViewModel: UserViewModel){
     userViewModel.getDatabaseVersion(contex)
     var name by remember { mutableStateOf("USUARIO1") }
     var email by remember { mutableStateOf("@gmail.com") }
-    var phone by remember { mutableStateOf("123") }
+    var phone by remember { mutableStateOf(123) }
     var password by remember { mutableStateOf("123") }
+    var personLastName by remember { mutableStateOf("Apellido") }
+    var personAddress by remember { mutableStateOf("Dirección") }
 
     val userList by userViewModel.userList.collectAsState()
     var showSuccessMessage by remember { mutableStateOf(false) } // sesion6
@@ -65,8 +67,8 @@ fun Persistencia (userViewModel: UserViewModel){
         )
 
         BasicTextField(
-            value = phone,
-            onValueChange = {phone = it},
+            value = phone.toString(),
+            onValueChange = {phone = it.toInt()},
             modifier = Modifier.padding(16.dp)
         )
 
@@ -76,9 +78,21 @@ fun Persistencia (userViewModel: UserViewModel){
             modifier = Modifier.padding(16.dp)
         )
 
+        BasicTextField(
+            value = personLastName,
+            onValueChange = {personLastName = it},
+            modifier = Modifier.padding(16.dp)
+        )
+
+        BasicTextField(
+            value = personAddress,
+            onValueChange = {personAddress = it},
+            modifier = Modifier.padding(16.dp)
+        )
+
         Button(onClick = {
             if (name.isNotBlank()){
-                userViewModel.insertUser(name,email,phone,password)
+                userViewModel.insertUser(name,email,phone,password,name,personLastName,personAddress)
                 showSuccessMessage = true // sesion6
             }
         }) {

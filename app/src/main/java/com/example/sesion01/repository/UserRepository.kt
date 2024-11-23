@@ -19,8 +19,22 @@ class UserRepository(private val userDao: UserDao){
         return userDao.getUsersFilter(nameFilter)
     }
 
-    fun updateUser(id: Long, newName: String, newEmail:String, newPhone:String, newPassword:String): Int {
-        return userDao.updateUser(id,newName, newEmail, newPhone,newPassword)
+    fun updateUser(id: Long,
+                   newName: String,
+                   newEmail:String,
+                   newPhone:Int,
+                   newPassword:String,
+                   newPersonName: String,
+                   newPersonLastName: String,
+                   newPersonAddress: String): Int {
+        return userDao.updateUser(  id,
+                                    newName,
+                                    newEmail,
+                                    newPhone,
+                                    newPassword,
+                                    newPersonName,
+                                    newPersonLastName,
+                                    newPersonAddress)
     }
 
     fun deleteUser(id: Long): Int {
